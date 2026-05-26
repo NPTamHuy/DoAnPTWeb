@@ -12,7 +12,7 @@ import Profile from './pages/customer/Profile';
 
 import Dashboard from './pages/admin/Dashboard';
 import Products from './pages/admin/Products';
-import AdminOrders from './pages/admin/Orders';
+import AdminOrders from './pages/admin/AdminOrders';
 import Users from './pages/admin/Users';
 import CreateProduct from './pages/admin/CreateProduct';
 import EditProduct from './pages/admin/EditProduct';
