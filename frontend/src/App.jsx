@@ -6,10 +6,12 @@ import Login from './pages/customer/Login';
 import Register from './pages/customer/Register';
 import ProductDetail from './pages/customer/ProductDetail';
 import Cart from './pages/customer/Cart';
+import ProductList from './pages/customer/ProductList';
+import CustomerOrders from './pages/customer/Orders';
 
 import Dashboard from './pages/admin/Dashboard';
 import Products from './pages/admin/Products';
-import Orders from './pages/admin/Orders';
+import AdminOrders from './pages/admin/Orders';
 import Users from './pages/admin/Users';
 import CreateProduct from './pages/admin/CreateProduct';
 import EditProduct from './pages/admin/EditProduct';
@@ -29,6 +31,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/products" element={<ProductList />} />
+        <Route path="/orders" element={<CustomerOrders />} />
 
         <Route
           path="/admin"
@@ -66,7 +70,7 @@ function App() {
           path="/admin/orders"
           element={
             <AdminRoute>
-              <Orders />
+              <AdminOrders />
             </AdminRoute>
           }
         />

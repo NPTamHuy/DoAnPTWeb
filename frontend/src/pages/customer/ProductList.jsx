@@ -78,7 +78,7 @@ export default function ProductList() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex gap-8">
           {/* Sidebar */}
-          <aside className="w-56 flex-shrink-0">
+          <aside className="w-56 shrink-0">
             <div className="bg-white rounded-2xl border border-gray-100 p-5 sticky top-24">
               <div className="flex items-center gap-2 mb-4">
                 <SlidersHorizontal size={16} className="text-gray-500" />

@@ -63,46 +63,48 @@ export default function Navbar({ onSearch, hideCategory = false }) {
           </div>
 
           {/* Danh mục dropdown */}
-          <div ref={catRef} className="relative shrink-0">
-            <button
-              onClick={() => setShowCatMenu(!showCatMenu)}
-              className="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-sm font-medium transition"
-            >
-              <Package size={16} />
-              <span>Danh mục</span>
-              <ChevronDown
-                size={14}
-                className={`transition-transform ${showCatMenu ? 'rotate-180' : ''}`}
-              />
-            </button>
-            {showCatMenu && (
-              <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
-                <button
-                  onClick={() => {
-                    navigate('/');
-                    setShowCatMenu(false);
-                  }}
-                  className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-2"
-                >
-                  <Package size={16} />
-                  Tất cả sản phẩm
-                </button>
-                <hr className="my-1" />
-                {categories.map((c) => (
+          {!hideCategory && (
+            <div ref={catRef} className="relative shrink-0">
+              <button
+                onClick={() => setShowCatMenu(!showCatMenu)}
+                className="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-sm font-medium transition"
+              >
+                <Package size={16} />
+                <span>Danh mục</span>
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform ${showCatMenu ? 'rotate-180' : ''}`}
+                />
+              </button>
+              {showCatMenu && (
+                <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50">
                   <button
-                    key={c.id}
                     onClick={() => {
-                      navigate(`/?category=${c.id}`);
+                      navigate('/products');
                       setShowCatMenu(false);
                     }}
-                    className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                    className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 flex items-center gap-2"
                   >
-                    {c.name}
+                    <Package size={16} />
+                    Tất cả sản phẩm
                   </button>
-                ))}
-              </div>
-            )}
-          </div>
+                  <hr className="my-1" />
+                  {categories.map((c) => (
+                    <button
+                      key={c.id}
+                      onClick={() => {
+                        navigate(`/products?category=${c.id}`);
+                        setShowCatMenu(false);
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                    >
+                      {c.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Search */}
           <div className="flex-1">

@@ -4,20 +4,17 @@ import Navbar from '../../components/customer/Navbar';
 import ProductCard from '../../components/customer/ProductCard';
 import api from '../../api/axiosConfig';
 import {
-  ShoppingCart,
-  Star,
-  ChevronRight,
   Zap,
   Shield,
   Truck,
   Headphones,
   Package,
+  ChevronRight,
 } from 'lucide-react';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [activeCategory, setActiveCategory] = useState('all');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -49,14 +46,9 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [products]);
 
-  const filtered = products.filter((p) => {
-    const matchCat =
-      activeCategory === 'all' || p.category?.id === parseInt(activeCategory);
-    const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
-    return matchCat && matchSearch;
-  });
-
-  const featuredProducts = products.slice(0, 4);
+  const filtered = products.filter((p) =>
+    p.name.toLowerCase().includes(search.toLowerCase()),
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -82,26 +74,24 @@ export default function Home() {
               </p>
               <div className="flex items-center gap-4">
                 <button
-                  onClick={() =>
-                    document
-                      .getElementById('products')
-                      .scrollIntoView({ behavior: 'smooth' })
-                  }
+                  onClick={() => navigate('/products')}
                   className="bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition"
                 >
                   Mua ngay
                 </button>
-                <button className="border border-white/30 text-white px-6 py-3 rounded-xl font-medium hover:bg-white/10 transition">
+                <button
+                  onClick={() => navigate('/products')}
+                  className="border border-white/30 text-white px-6 py-3 rounded-xl font-medium hover:bg-white/10 transition"
+                >
                   Xem danh mục
                 </button>
               </div>
             </div>
 
-            {/* Product Slider */}
+            {/* Slider */}
             <div className="hidden md:block">
               {products.length > 0 && (
                 <div className="relative">
-                  {/* Slide */}
                   <div
                     className="bg-white/10 backdrop-blur rounded-3xl p-6 cursor-pointer hover:bg-white/20 transition"
                     onClick={() =>
@@ -114,8 +104,7 @@ export default function Home() {
                           key={currentSlide}
                           src={products[currentSlide].imageUrl}
                           alt={products[currentSlide].name}
-                          className="w-full h-full object-contain rounded-2xl animate-fade-in"
-                          style={{ animation: 'fadeIn 0.5s ease' }}
+                          className="w-full h-full object-contain rounded-2xl"
                         />
                       ) : (
                         <div className="w-full h-full bg-white/10 rounded-2xl flex items-center justify-center">
@@ -136,23 +125,15 @@ export default function Home() {
                       ₫
                     </p>
                   </div>
-
-                  {/* Dots */}
                   <div className="flex items-center justify-center gap-2 mt-4">
                     {products.slice(0, 5).map((_, i) => (
                       <button
                         key={i}
                         onClick={() => setCurrentSlide(i)}
-                        className={`transition-all rounded-full ${
-                          i === currentSlide
-                            ? 'w-6 h-2 bg-white'
-                            : 'w-2 h-2 bg-white/40 hover:bg-white/60'
-                        }`}
+                        className={`transition-all rounded-full ${i === currentSlide ? 'w-6 h-2 bg-white' : 'w-2 h-2 bg-white/40 hover:bg-white/60'}`}
                       />
                     ))}
                   </div>
-
-                  {/* Prev/Next */}
                   <button
                     onClick={() =>
                       setCurrentSlide(
@@ -224,61 +205,33 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">Danh mục sản phẩm</h2>
+          <button
+            onClick={() => navigate('/products')}
+            className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 font-medium"
+          >
+            Xem tất cả <ChevronRight size={16} />
+          </button>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           <button
-            onClick={() => setActiveCategory('all')}
-            className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition
-                            ${
-                              activeCategory === 'all'
-                                ? 'border-blue-600 bg-blue-50'
-                                : 'border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50/50'
-                            }`}
+            onClick={() => navigate('/products')}
+            className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50/50 transition"
           >
-            <div
-              className={`w-12 h-12 rounded-xl flex items-center justify-center
-                            ${activeCategory === 'all' ? 'bg-blue-600' : 'bg-gray-100'}`}
-            >
-              <Package
-                size={22}
-                className={
-                  activeCategory === 'all' ? 'text-white' : 'text-gray-500'
-                }
-              />
+            <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center">
+              <Package size={22} className="text-gray-500" />
             </div>
-            <span
-              className={`text-xs font-medium ${activeCategory === 'all' ? 'text-blue-600' : 'text-gray-600'}`}
-            >
-              Tất cả
-            </span>
+            <span className="text-xs font-medium text-gray-600">Tất cả</span>
           </button>
           {categories.map((c) => (
             <button
               key={c.id}
-              onClick={() => setActiveCategory(String(c.id))}
-              className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition
-                                ${
-                                  activeCategory === String(c.id)
-                                    ? 'border-blue-600 bg-blue-50'
-                                    : 'border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50/50'
-                                }`}
+              onClick={() => navigate(`/products?category=${c.id}`)}
+              className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50/50 transition"
             >
-              <div
-                className={`w-12 h-12 rounded-xl flex items-center justify-center
-                                ${activeCategory === String(c.id) ? 'bg-blue-600' : 'bg-gray-100'}`}
-              >
-                <Package
-                  size={22}
-                  className={
-                    activeCategory === String(c.id)
-                      ? 'text-white'
-                      : 'text-gray-500'
-                  }
-                />
+              <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center">
+                <Package size={22} className="text-gray-500" />
               </div>
-              <span
-                className={`text-xs font-medium text-center ${activeCategory === String(c.id) ? 'text-blue-600' : 'text-gray-600'}`}
-              >
+              <span className="text-xs font-medium text-center text-gray-600">
                 {c.name}
               </span>
             </button>
@@ -286,20 +239,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Products */}
+      {/* Sản phẩm nổi bật */}
       <section
         id="products"
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16"
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-gray-900">
-            {activeCategory === 'all'
-              ? 'Tất cả sản phẩm'
-              : categories.find((c) => String(c.id) === activeCategory)?.name}
+            Sản phẩm nổi bật
             <span className="ml-2 text-sm font-normal text-gray-400">
               ({filtered.length} sản phẩm)
             </span>
           </h2>
+          <button
+            onClick={() => navigate('/products')}
+            className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 font-medium"
+          >
+            Xem tất cả <ChevronRight size={16} />
+          </button>
         </div>
 
         {loading ? (
@@ -325,9 +282,20 @@ export default function Home() {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filtered.map((p) => (
+            {filtered.slice(0, 8).map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
+          </div>
+        )}
+
+        {filtered.length > 8 && (
+          <div className="text-center mt-8">
+            <button
+              onClick={() => navigate('/products')}
+              className="bg-blue-600 text-white px-8 py-3 rounded-xl font-semibold hover:bg-blue-700 transition"
+            >
+              Xem tất cả sản phẩm
+            </button>
           </div>
         )}
       </section>
@@ -353,12 +321,7 @@ export default function Home() {
                 {categories.map((c) => (
                   <li key={c.id}>
                     <button
-                      onClick={() => {
-                        setActiveCategory(String(c.id));
-                        document
-                          .getElementById('products')
-                          .scrollIntoView({ behavior: 'smooth' });
-                      }}
+                      onClick={() => navigate(`/products?category=${c.id}`)}
                       className="hover:text-white transition"
                     >
                       {c.name}
