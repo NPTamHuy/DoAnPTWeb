@@ -8,6 +8,7 @@ import ProductDetail from './pages/customer/ProductDetail';
 import Cart from './pages/customer/Cart';
 import ProductList from './pages/customer/ProductList';
 import CustomerOrders from './pages/customer/Orders';
+import Profile from './pages/customer/Profile';
 
 import Dashboard from './pages/admin/Dashboard';
 import Products from './pages/admin/Products';
@@ -33,6 +34,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/orders" element={<CustomerOrders />} />
+        <Route path="/profile" element={<Profile />} />
 
         <Route
           path="/admin"

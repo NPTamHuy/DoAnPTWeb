@@ -1,45 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/customer/Navbar';
+import Footer from '../../components/customer/Footer';
 import api from '../../api/axiosConfig';
 import useAuthStore from '../../store/authStore';
-import {
-  Package,
-  ChevronRight,
-  Clock,
-  CheckCircle,
-  Truck,
-  XCircle,
-  ShoppingBag,
-} from 'lucide-react';
-
-const STATUS_CONFIG = {
-  PENDING: {
-    label: 'Chờ xác nhận',
-    color: 'bg-yellow-100 text-yellow-700',
-    icon: Clock,
-  },
-  CONFIRMED: {
-    label: 'Đã xác nhận',
-    color: 'bg-blue-100 text-blue-700',
-    icon: CheckCircle,
-  },
-  SHIPPING: {
-    label: 'Đang giao',
-    color: 'bg-purple-100 text-purple-700',
-    icon: Truck,
-  },
-  DELIVERED: {
-    label: 'Đã giao',
-    color: 'bg-green-100 text-green-700',
-    icon: CheckCircle,
-  },
-  CANCELLED: {
-    label: 'Đã hủy',
-    color: 'bg-red-100 text-red-700',
-    icon: XCircle,
-  },
-};
+import { STATUS_CONFIG } from '../../utils/constants';
+import { formatPrice, formatDateTime } from '../../utils/formatters';
+import { Package, ChevronRight, XCircle, ShoppingBag } from 'lucide-react';
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -177,13 +144,7 @@ export default function Orders() {
                       </span>
                       <span className="text-gray-300">•</span>
                       <span className="text-xs text-gray-400">
-                        {new Date(order.createdAt).toLocaleDateString('vi-VN', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                        {formatDateTime(order.createdAt)}
                       </span>
                     </div>
                     <span
@@ -233,10 +194,7 @@ export default function Orders() {
                           </p>
                         </div>
                         <p className="text-sm font-semibold text-gray-900 shrink-0">
-                          {(Number(item.price) * item.quantity).toLocaleString(
-                            'vi-VN',
-                          )}
-                          ₫
+                          {formatPrice(Number(item.price) * item.quantity)}
                         </p>
                       </div>
                     ))}
@@ -251,7 +209,6 @@ export default function Orders() {
                       {order.shippingAddress}
                     </div>
                     <div className="flex items-center gap-4">
-                      {/* Nút hủy — chỉ hiện khi PENDING */}
                       {order.status === 'PENDING' && (
                         <button
                           onClick={async () => {
@@ -288,7 +245,7 @@ export default function Orders() {
                           Tổng tiền
                         </p>
                         <p className="text-blue-600 font-bold">
-                          {Number(order.totalAmount).toLocaleString('vi-VN')}₫
+                          {formatPrice(order.totalAmount)}
                         </p>
                       </div>
                     </div>
@@ -300,12 +257,7 @@ export default function Orders() {
         )}
       </div>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white mt-16">
-        <div className="max-w-4xl mx-auto px-4 py-8 text-center text-sm text-gray-500">
-          © 2026 TechShop. All rights reserved.
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

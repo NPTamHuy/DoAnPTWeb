@@ -1,332 +1,263 @@
 import { useEffect, useState } from 'react';
-import AdminLayout from '../../components/admin/AdminLayout';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../../components/customer/Navbar';
+import Footer from '../../components/customer/Footer';
 import api from '../../api/axiosConfig';
-import {
-  Clock,
-  CheckCircle,
-  Truck,
-  XCircle,
-  Package,
-  Search,
-  ChevronDown,
-} from 'lucide-react';
+import useAuthStore from '../../store/authStore';
+import { STATUS_CONFIG } from '../../utils/constants';
+import { formatPrice, formatDateTime } from '../../utils/formatters';
+import { Package, ChevronRight, XCircle, ShoppingBag } from 'lucide-react';
 
-const STATUS_CONFIG = {
-  PENDING: {
-    label: 'Chờ xác nhận',
-    color: 'bg-yellow-100 text-yellow-700',
-    icon: Clock,
-  },
-  CONFIRMED: {
-    label: 'Đã xác nhận',
-    color: 'bg-blue-100 text-blue-700',
-    icon: CheckCircle,
-  },
-  SHIPPING: {
-    label: 'Đang giao',
-    color: 'bg-purple-100 text-purple-700',
-    icon: Truck,
-  },
-  DELIVERED: {
-    label: 'Đã giao',
-    color: 'bg-green-100 text-green-700',
-    icon: CheckCircle,
-  },
-  CANCELLED: {
-    label: 'Đã hủy',
-    color: 'bg-red-100 text-red-700',
-    icon: XCircle,
-  },
-};
-
-const STATUS_OPTIONS = [
-  'PENDING',
-  'CONFIRMED',
-  'SHIPPING',
-  'DELIVERED',
-  'CANCELLED',
-];
-
-export default function AdminOrders() {
+export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('ALL');
-  const [search, setSearch] = useState('');
-  const [updatingId, setUpdatingId] = useState(null);
-
-  const fetchOrders = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const res = await api.get('/orders', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setOrders(Array.isArray(res.data) ? res.data : []);
-    } catch (err) {
-      console.error(err);
-    }
-    setLoading(false);
-  };
+  const { token } = useAuthStore();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  const handleStatusChange = async (orderId, newStatus) => {
-    setUpdatingId(orderId);
-    try {
-      const token = localStorage.getItem('token');
-      await api.put(
-        `/orders/${orderId}/status`,
-        { status: newStatus },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      setOrders((prev) =>
-        prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o)),
-      );
-    } catch (err) {
-      alert('Cập nhật thất bại!');
+    if (!token) {
+      navigate('/login');
+      return;
     }
-    setUpdatingId(null);
-  };
+    const fetchOrders = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await api.get('/orders/my', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setOrders(Array.isArray(res.data) ? res.data : []);
+      } catch (err) {
+        console.error(err);
+      }
+      setLoading(false);
+    };
+    fetchOrders();
+  }, [token]);
 
   const tabs = [
-    { key: 'ALL', label: 'Tất cả', count: orders.length },
-    ...STATUS_OPTIONS.map((s) => ({
-      key: s,
-      label: STATUS_CONFIG[s].label,
-      count: orders.filter((o) => o.status === s).length,
-    })),
+    { key: 'ALL', label: 'Tất cả' },
+    { key: 'PENDING', label: 'Chờ xác nhận' },
+    { key: 'CONFIRMED', label: 'Đã xác nhận' },
+    { key: 'SHIPPING', label: 'Đang giao' },
+    { key: 'DELIVERED', label: 'Đã giao' },
+    { key: 'CANCELLED', label: 'Đã hủy' },
   ];
 
-  const filtered = orders.filter((o) => {
-    const matchTab = activeTab === 'ALL' || o.status === activeTab;
-    const matchSearch =
-      search === '' ||
-      String(o.id).includes(search) ||
-      o.shippingAddress?.toLowerCase().includes(search.toLowerCase());
-    return matchTab && matchSearch;
-  });
+  const filtered =
+    activeTab === 'ALL' ? orders : orders.filter((o) => o.status === activeTab);
 
   return (
-    <AdminLayout>
-      {/* Stats */}
-      <div className="grid grid-cols-5 gap-4 mb-6">
-        {STATUS_OPTIONS.map((s) => {
-          const config = STATUS_CONFIG[s];
-          const Icon = config.icon;
-          const count = orders.filter((o) => o.status === s).length;
-          return (
-            <button
-              key={s}
-              onClick={() => setActiveTab(s)}
-              className={`bg-white rounded-xl border p-4 text-left hover:shadow-md transition
-                                ${activeTab === s ? 'border-blue-500 shadow-md' : 'border-gray-100'}`}
-            >
-              <div
-                className={`inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-full mb-2 ${config.color}`}
-              >
-                <Icon size={12} />
-                {config.label}
-              </div>
-              <p className="text-2xl font-bold text-gray-900">{count}</p>
-            </button>
-          );
-        })}
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+
+      {/* Breadcrumb */}
+      <div className="bg-white border-b border-gray-100">
+        <div className="max-w-4xl mx-auto px-4 py-3 text-sm text-gray-500 flex items-center gap-2">
+          <button onClick={() => navigate('/')} className="hover:text-blue-600">
+            Trang chủ
+          </button>
+          <ChevronRight size={14} />
+          <span className="text-gray-900 font-medium">Đơn hàng của tôi</span>
+        </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        {/* Header */}
-        <div className="p-5 border-b border-gray-100 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6">
+          Đơn hàng của tôi
+        </h1>
+
+        {/* Tabs */}
+        <div className="bg-white rounded-2xl border border-gray-100 mb-6 overflow-x-auto">
+          <div className="flex min-w-max">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap transition
+                className={`px-5 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition
                                     ${
                                       activeTab === tab.key
-                                        ? 'bg-blue-600 text-white'
-                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        ? 'border-blue-600 text-blue-600'
+                                        : 'border-transparent text-gray-500 hover:text-gray-700'
                                     }`}
               >
                 {tab.label}
-                <span
-                  className={`text-xs px-1.5 py-0.5 rounded-full
-                                    ${activeTab === tab.key ? 'bg-white/20 text-white' : 'bg-white text-gray-500'}`}
-                >
-                  {tab.count}
-                </span>
+                {tab.key !== 'ALL' && (
+                  <span
+                    className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full
+                                        ${activeTab === tab.key ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'}`}
+                  >
+                    {orders.filter((o) => o.status === tab.key).length}
+                  </span>
+                )}
               </button>
             ))}
           </div>
-          <div className="relative flex-shrink-0">
-            <Search
-              size={14}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            />
-            <input
-              type="text"
-              placeholder="Tìm đơn hàng..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-8 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-48"
-            />
-          </div>
         </div>
 
-        {/* Table */}
+        {/* Orders list */}
         {loading ? (
-          <div className="p-8 text-center text-gray-400">Đang tải...</div>
+          <div className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-2xl border border-gray-100 p-6 animate-pulse"
+              >
+                <div className="h-4 bg-gray-100 rounded w-1/4 mb-4" />
+                <div className="h-16 bg-gray-100 rounded mb-4" />
+                <div className="h-4 bg-gray-100 rounded w-1/3" />
+              </div>
+            ))}
+          </div>
         ) : filtered.length === 0 ? (
-          <div className="p-16 text-center text-gray-400">
-            <Package size={40} className="mx-auto mb-3 opacity-30" />
-            <p>Không có đơn hàng nào</p>
+          <div className="bg-white rounded-2xl border border-gray-100 py-20 text-center">
+            <ShoppingBag size={56} className="mx-auto text-gray-200 mb-4" />
+            <p className="text-gray-500 font-medium mb-2">
+              Chưa có đơn hàng nào
+            </p>
+            <p className="text-gray-400 text-sm mb-6">
+              Hãy mua sắm và đặt hàng ngay!
+            </p>
+            <button
+              onClick={() => navigate('/products')}
+              className="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition"
+            >
+              Mua sắm ngay
+            </button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Đơn hàng
-                  </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Sản phẩm
-                  </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Khách hàng
-                  </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Địa chỉ
-                  </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Tổng tiền
-                  </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Trạng thái
-                  </th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                    Cập nhật
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {filtered.map((order) => {
-                  const status =
-                    STATUS_CONFIG[order.status] || STATUS_CONFIG.PENDING;
-                  const StatusIcon = status.icon;
-                  return (
-                    <tr key={order.id} className="hover:bg-gray-50 transition">
-                      <td className="px-5 py-4">
-                        <p className="text-sm font-bold text-gray-900">
-                          #{order.id}
-                        </p>
-                        <p className="text-xs text-gray-400 mt-0.5">
-                          {order.createdAt
-                            ? new Date(order.createdAt).toLocaleDateString(
-                                'vi-VN',
-                              )
-                            : '—'}
-                        </p>
-                      </td>
-                      <td className="px-5 py-4">
-                        <div className="space-y-1">
-                          {order.orderItems?.slice(0, 2).map((item, i) => (
-                            <div key={i} className="flex items-center gap-2">
-                              {item.product?.imageUrl && (
-                                <img
-                                  src={item.product.imageUrl}
-                                  alt=""
-                                  className="w-8 h-8 object-cover rounded-lg flex-shrink-0"
-                                />
-                              )}
-                              <div className="min-w-0">
-                                <p className="text-xs font-medium text-gray-800 truncate max-w-40">
-                                  {item.product?.name || 'Sản phẩm'}
-                                </p>
-                                <p className="text-xs text-gray-400">
-                                  x{item.quantity}
-                                </p>
-                              </div>
+          <div className="space-y-4">
+            {filtered.map((order) => {
+              const status =
+                STATUS_CONFIG[order.status] || STATUS_CONFIG.PENDING;
+              const StatusIcon = status.icon;
+              return (
+                <div
+                  key={order.id}
+                  className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md transition"
+                >
+                  {/* Order header */}
+                  <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-semibold text-gray-900">
+                        Đơn #{order.id}
+                      </span>
+                      <span className="text-gray-300">•</span>
+                      <span className="text-xs text-gray-400">
+                        {formatDateTime(order.createdAt)}
+                      </span>
+                    </div>
+                    <span
+                      className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full ${status.color}`}
+                    >
+                      <StatusIcon size={13} />
+                      {status.label}
+                    </span>
+                  </div>
+
+                  {/* Order items */}
+                  <div className="px-6 py-4">
+                    {order.orderItems?.map((item, i) => (
+                      <div
+                        key={i}
+                        className={`flex items-center gap-4 ${i > 0 ? 'mt-4 pt-4 border-t border-gray-50' : ''}`}
+                      >
+                        <div
+                          className="w-16 h-16 bg-gray-50 rounded-xl overflow-hidden shrink-0 cursor-pointer"
+                          onClick={() =>
+                            navigate(`/product/${item.product?.id}`)
+                          }
+                        >
+                          {item.product?.imageUrl ? (
+                            <img
+                              src={item.product.imageUrl}
+                              alt={item.product.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-200">
+                              <Package size={24} />
                             </div>
-                          ))}
-                          {order.orderItems?.length > 2 && (
-                            <p className="text-xs text-gray-400">
-                              +{order.orderItems.length - 2} sản phẩm khác
-                            </p>
                           )}
                         </div>
-                      </td>
-                      <td className="px-5 py-4">
-                        <p className="text-sm font-medium text-gray-900">
-                          {order.user?.fullName || '—'}
-                        </p>
-                        <p className="text-xs text-gray-400">
-                          {order.user?.email || ''}
-                        </p>
-                      </td>
-                      <td className="px-5 py-4">
-                        <p className="text-xs text-gray-600 max-w-36 line-clamp-2">
-                          {order.shippingAddress}
-                        </p>
-                        {order.phone && (
-                          <p className="text-xs text-gray-400 mt-0.5">
-                            {order.phone}
-                          </p>
-                        )}
-                      </td>
-                      <td className="px-5 py-4">
-                        <p className="text-sm font-bold text-blue-600">
-                          {Number(order.totalAmount).toLocaleString('vi-VN')}₫
-                        </p>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span
-                          className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-full ${status.color}`}
-                        >
-                          <StatusIcon size={12} />
-                          {status.label}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <div className="relative">
-                          <select
-                            value={order.status}
-                            onChange={(e) =>
-                              handleStatusChange(order.id, e.target.value)
+                        <div className="flex-1 min-w-0">
+                          <p
+                            className="text-sm font-medium text-gray-900 line-clamp-2 cursor-pointer hover:text-blue-600"
+                            onClick={() =>
+                              navigate(`/product/${item.product?.id}`)
                             }
-                            disabled={
-                              updatingId === order.id ||
-                              order.status === 'DELIVERED' ||
-                              order.status === 'CANCELLED'
-                            }
-                            className="text-xs border border-gray-200 rounded-lg px-3 py-1.5 pr-7 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            {STATUS_OPTIONS.map((s) => (
-                              <option key={s} value={s}>
-                                {STATUS_CONFIG[s].label}
-                              </option>
-                            ))}
-                          </select>
-                          <ChevronDown
-                            size={12}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
-                          />
-                        </div>
-                        {updatingId === order.id && (
-                          <p className="text-xs text-blue-500 mt-1">
-                            Đang cập nhật...
+                            {item.product?.name || 'Sản phẩm'}
                           </p>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                          <p className="text-xs text-gray-400 mt-0.5">
+                            x{item.quantity}
+                          </p>
+                        </div>
+                        <p className="text-sm font-semibold text-gray-900 shrink-0">
+                          {formatPrice(Number(item.price) * item.quantity)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Order footer */}
+                  <div className="flex items-center justify-between px-6 py-4 bg-gray-50 border-t border-gray-100">
+                    <div className="text-sm text-gray-500">
+                      <span className="font-medium text-gray-700">
+                        Giao đến:{' '}
+                      </span>
+                      {order.shippingAddress}
+                    </div>
+                    <div className="flex items-center gap-4">
+                      {order.status === 'PENDING' && (
+                        <button
+                          onClick={async () => {
+                            if (!confirm('Bạn có chắc muốn hủy đơn hàng này?'))
+                              return;
+                            try {
+                              const token = localStorage.getItem('token');
+                              await api.put(
+                                `/orders/${order.id}/status`,
+                                { status: 'CANCELLED' },
+                                {
+                                  headers: { Authorization: `Bearer ${token}` },
+                                },
+                              );
+                              setOrders((prev) =>
+                                prev.map((o) =>
+                                  o.id === order.id
+                                    ? { ...o, status: 'CANCELLED' }
+                                    : o,
+                                ),
+                              );
+                            } catch (err) {
+                              alert('Hủy đơn thất bại!');
+                            }
+                          }}
+                          className="flex items-center gap-1.5 px-4 py-2 border border-red-200 text-red-500 text-sm font-medium rounded-xl hover:bg-red-50 transition"
+                        >
+                          <XCircle size={15} />
+                          Hủy đơn hàng
+                        </button>
+                      )}
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-xs text-gray-400 mb-0.5">
+                          Tổng tiền
+                        </p>
+                        <p className="text-blue-600 font-bold">
+                          {formatPrice(order.totalAmount)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
-    </AdminLayout>
+
+      <Footer />
+    </div>
   );
 }
