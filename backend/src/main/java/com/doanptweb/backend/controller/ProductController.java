@@ -1,7 +1,7 @@
 package com.doanptweb.backend.controller;
 
-import com.doanptweb.backend.entity.Product;
-import com.doanptweb.backend.repository.ProductRepository;
+import com.doanptweb.backend.entity.*;
+import com.doanptweb.backend.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +19,9 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:5173")
 public class ProductController {
 
-    @Autowired
-    private ProductRepository productRepository;
+    @Autowired private ProductRepository productRepository;
+    @Autowired private ProductImageRepository imageRepository;
+    @Autowired private ProductSpecRepository specRepository;
 
     @GetMapping
     public List<Product> getAll() {
@@ -34,12 +35,20 @@ public class ProductController {
 
     @PostMapping
     public Product create(@RequestBody Product product) {
+        if (product.getImages() != null)
+            product.getImages().forEach(img -> img.setProduct(product));
+        if (product.getSpecs() != null)
+            product.getSpecs().forEach(spec -> spec.setProduct(product));
         return productRepository.save(product);
     }
 
     @PutMapping("/{id}")
     public Product update(@PathVariable Long id, @RequestBody Product product) {
         product.setId(id);
+        if (product.getImages() != null)
+            product.getImages().forEach(img -> img.setProduct(product));
+        if (product.getSpecs() != null)
+            product.getSpecs().forEach(spec -> spec.setProduct(product));
         return productRepository.save(product);
     }
 

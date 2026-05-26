@@ -1,11 +1,13 @@
 package com.doanptweb.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
 public class User {
 
     @Id
@@ -19,9 +21,7 @@ public class User {
     private String password;
 
     private String fullName;
-
     private String phone;
-
     private String address;
 
     @Enumerated(EnumType.STRING)

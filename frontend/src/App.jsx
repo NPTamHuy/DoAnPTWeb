@@ -6,8 +6,11 @@ import Login from './pages/customer/Login';
 import Register from './pages/customer/Register';
 
 import Dashboard from './pages/admin/Dashboard';
-import Categories from './pages/admin/Categories';
 import Products from './pages/admin/Products';
+import Orders from './pages/admin/Orders';
+import Users from './pages/admin/Users';
+import CreateProduct from './pages/admin/CreateProduct';
+import EditProduct from './pages/admin/EditProduct';
 
 const AdminRoute = ({ children }) => {
   const { token, role } = useAuthStore();
@@ -32,18 +35,42 @@ function App() {
           }
         />
         <Route
-          path="/admin/categories"
-          element={
-            <AdminRoute>
-              <Categories />
-            </AdminRoute>
-          }
-        />
-        <Route
           path="/admin/products"
           element={
             <AdminRoute>
               <Products />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/products/create"
+          element={
+            <AdminRoute>
+              <CreateProduct />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/products/edit/:id"
+          element={
+            <AdminRoute>
+              <EditProduct />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/orders"
+          element={
+            <AdminRoute>
+              <Orders />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <AdminRoute>
+              <Users />
             </AdminRoute>
           }
         />
