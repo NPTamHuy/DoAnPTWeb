@@ -4,6 +4,7 @@ import useAuthStore from './store/authStore';
 import Home from './pages/customer/Home';
 import Login from './pages/customer/Login';
 import Register from './pages/customer/Register';
+import ProductDetail from './pages/customer/ProductDetail';
 
 import Dashboard from './pages/admin/Dashboard';
 import Products from './pages/admin/Products';
@@ -25,6 +26,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/product/:id" element={<ProductDetail />} />
 
         <Route
           path="/admin"
