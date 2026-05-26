@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../../components/customer/Navbar';
+import StarRating from '../../components/customer/StarRating';
+import useCartStore from '../../store/cartStore';
+import useAuthStore from '../../store/authStore';
 import api from '../../api/axiosConfig';
 import {
   ShoppingCart,
@@ -26,6 +29,12 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [stats, setStats] = useState({ average: 0, count: 0 });
+  const [myReview, setMyReview] = useState({ rating: 5, comment: '' });
+  const [hasReviewed, setHasReviewed] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const { token } = useAuthStore();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,6 +54,14 @@ export default function ProductDetail() {
           )
           .slice(0, 4);
         setRelatedProducts(related);
+
+        // Fetch reviews
+        const [reviewsRes, statsRes] = await Promise.all([
+          api.get(`/reviews/product/${id}`),
+          api.get(`/reviews/product/${id}/stats`),
+        ]);
+        setReviews(Array.isArray(reviewsRes.data) ? reviewsRes.data : []);
+        setStats(statsRes.data);
       } catch (err) {
         console.error(err);
       }
@@ -63,11 +80,14 @@ export default function ProductDetail() {
     : [];
 
   const handleAddToCart = () => {
+    addItem(product, quantity);
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
   };
 
   const filledSpecs = product?.specs?.filter((s) => s.specValue?.trim()) || [];
+
+  const addItem = useCartStore((s) => s.addItem);
 
   if (loading)
     return (
@@ -184,16 +204,11 @@ export default function ProductDetail() {
 
             {/* Rating */}
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    size={16}
-                    className="text-yellow-400 fill-yellow-400"
-                  />
-                ))}
-              </div>
-              <span className="text-sm text-gray-500">4.8 (128 đánh giá)</span>
+              <StarRating
+                average={stats.average}
+                count={stats.count}
+                size={16}
+              />
               <span className="text-sm text-gray-300">|</span>
               <span
                 className={`text-sm font-medium ${product.stock > 0 ? 'text-green-600' : 'text-red-500'}`}
@@ -403,6 +418,191 @@ export default function ProductDetail() {
                 </div>
               ))}
             </div>
+          </div>
+        )}
+      </div>
+      {/* Reviews */}
+      <div className="mt-12 bg-white rounded-2xl border border-gray-100 p-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-xl font-bold text-gray-900">Đánh giá sản phẩm</h2>
+          {stats.count > 0 && (
+            <div className="flex items-center gap-4 bg-yellow-50 border border-yellow-100 px-5 py-3 rounded-2xl">
+              <div className="text-center">
+                <p className="text-4xl font-bold text-yellow-500 leading-none">
+                  {stats.average}
+                </p>
+                <p className="text-xs text-gray-400 mt-1">/ 5 điểm</p>
+              </div>
+              <div className="w-px h-10 bg-yellow-200" />
+              <div>
+                <div className="flex items-center gap-0.5 mb-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      size={16}
+                      className={
+                        i < Math.round(stats.average)
+                          ? 'text-yellow-400 fill-yellow-400'
+                          : 'text-gray-200 fill-gray-200'
+                      }
+                    />
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500">
+                  {stats.count} lượt đánh giá
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Write review */}
+        {token && !hasReviewed && (
+          <div className="bg-gray-50 rounded-2xl p-6 mb-8">
+            <h3 className="text-base font-semibold text-gray-900 mb-4">
+              Viết đánh giá của bạn
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Đánh giá
+                </label>
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      onClick={() =>
+                        setMyReview((r) => ({ ...r, rating: star }))
+                      }
+                    >
+                      <Star
+                        size={32}
+                        className={
+                          star <= myReview.rating
+                            ? 'text-yellow-400 fill-yellow-400 hover:scale-110 transition-transform'
+                            : 'text-gray-200 fill-gray-200 hover:text-yellow-300 hover:fill-yellow-300 transition-colors'
+                        }
+                      />
+                    </button>
+                  ))}
+                  <span className="ml-3 text-sm font-medium text-gray-600 bg-white px-3 py-1 rounded-lg border border-gray-200">
+                    {
+                      ['', 'Rất tệ', 'Tệ', 'Bình thường', 'Tốt', 'Xuất sắc'][
+                        myReview.rating
+                      ]
+                    }
+                  </span>
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">
+                  Nhận xét
+                </label>
+                <textarea
+                  value={myReview.comment}
+                  onChange={(e) =>
+                    setMyReview((r) => ({ ...r, comment: e.target.value }))
+                  }
+                  placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
+                  rows={3}
+                  className="w-full border border-gray-200 bg-white px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                />
+              </div>
+              <button
+                onClick={async () => {
+                  setSubmitting(true);
+                  try {
+                    const token = localStorage.getItem('token');
+                    await api.post(`/reviews/product/${id}`, myReview, {
+                      headers: { Authorization: `Bearer ${token}` },
+                    });
+                    const [r, s] = await Promise.all([
+                      api.get(`/reviews/product/${id}`),
+                      api.get(`/reviews/product/${id}/stats`),
+                    ]);
+                    setReviews(Array.isArray(r.data) ? r.data : []);
+                    setStats(s.data);
+                    setHasReviewed(true);
+                  } catch (err) {
+                    alert(err.response?.data?.message || 'Có lỗi xảy ra!');
+                  }
+                  setSubmitting(false);
+                }}
+                disabled={submitting}
+                className="bg-blue-600 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition disabled:opacity-50"
+              >
+                {submitting ? 'Đang gửi...' : 'Gửi đánh giá'}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {!token && (
+          <div className="bg-blue-50 rounded-2xl p-5 mb-8 text-center">
+            <p className="text-sm text-gray-600 mb-3">
+              Đăng nhập để đánh giá sản phẩm này
+            </p>
+            <button
+              onClick={() => navigate('/login')}
+              className="bg-blue-600 text-white px-6 py-2 rounded-xl text-sm font-semibold hover:bg-blue-700 transition"
+            >
+              Đăng nhập
+            </button>
+          </div>
+        )}
+
+        {/* Review list */}
+        {reviews.length === 0 ? (
+          <div className="text-center py-12 text-gray-400">
+            <Star size={40} className="mx-auto mb-3 opacity-20" />
+            <p>Chưa có đánh giá nào. Hãy là người đầu tiên!</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {reviews.map((r) => (
+              <div
+                key={r.id}
+                className="border border-gray-100 rounded-2xl p-5"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+                      {r.user?.fullName?.charAt(0) || 'U'}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {r.user?.fullName || 'Người dùng'}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {new Date(r.createdAt).toLocaleDateString('vi-VN')}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 bg-yellow-50 px-3 py-1.5 rounded-lg">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        size={13}
+                        className={
+                          i < r.rating
+                            ? 'text-yellow-400 fill-yellow-400'
+                            : 'text-gray-200 fill-gray-200'
+                        }
+                      />
+                    ))}
+                    <span className="text-xs font-semibold text-yellow-600 ml-1">
+                      {r.rating}.0
+                    </span>
+                  </div>
+                </div>
+                {r.comment && (
+                  <p className="text-sm text-gray-600 leading-relaxed bg-gray-50 rounded-xl px-4 py-3">
+                    {r.comment}
+                  </p>
+                )}
+              </div>
+            ))}
           </div>
         )}
       </div>

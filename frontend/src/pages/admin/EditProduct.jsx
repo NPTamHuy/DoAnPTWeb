@@ -313,10 +313,7 @@ export default function EditProduct() {
             <div className="space-y-3">
               {specs.map((spec, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <GripVertical
-                    size={16}
-                    className="text-gray-300 flex-shrink-0"
-                  />
+                  <GripVertical size={16} className="text-gray-300 shrink-0" />
                   <div className="grid grid-cols-2 gap-3 flex-1">
                     <input
                       type="text"
@@ -341,7 +338,7 @@ export default function EditProduct() {
                   </div>
                   <button
                     onClick={() => removeSpec(i)}
-                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition flex-shrink-0"
+                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition shrink-0"
                   >
                     <X size={16} />
                   </button>

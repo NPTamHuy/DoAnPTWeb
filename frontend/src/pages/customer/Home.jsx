@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/customer/Navbar';
+import ProductCard from '../../components/customer/ProductCard';
 import api from '../../api/axiosConfig';
 import {
   ShoppingCart,
@@ -62,7 +63,7 @@ export default function Home() {
       <Navbar onSearch={setSearch} />
 
       {/* Hero Banner */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white overflow-hidden">
+      <section className="bg-linear-to-br from-blue-600 via-blue-700 to-indigo-800 text-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
@@ -204,7 +205,7 @@ export default function Home() {
               },
             ].map((f, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
                   <f.icon size={20} className="text-blue-600" />
                 </div>
                 <div>
@@ -325,68 +326,7 @@ export default function Home() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filtered.map((p) => (
-              <div
-                key={p.id}
-                className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer group"
-                onClick={() => navigate(`/product/${p.id}`)}
-              >
-                <div className="relative h-48 bg-gray-50 overflow-hidden">
-                  {p.imageUrl ? (
-                    <img
-                      src={p.imageUrl}
-                      alt={p.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-200">
-                      <Package size={48} />
-                    </div>
-                  )}
-                  {p.stock <= 5 && p.stock > 0 && (
-                    <span className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
-                      Sắp hết
-                    </span>
-                  )}
-                  {p.stock === 0 && (
-                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                      <span className="bg-white text-gray-700 text-xs font-medium px-3 py-1 rounded-full">
-                        Hết hàng
-                      </span>
-                    </div>
-                  )}
-                </div>
-                <div className="p-4">
-                  <p className="text-xs text-blue-600 font-medium mb-1">
-                    {p.category?.name || 'Khác'}
-                  </p>
-                  <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 mb-3 leading-snug">
-                    {p.name}
-                  </h3>
-                  <div className="flex items-center gap-1 mb-3">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        size={12}
-                        className="text-yellow-400 fill-yellow-400"
-                      />
-                    ))}
-                    <span className="text-xs text-gray-400 ml-1">(128)</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-blue-600 font-bold">
-                      {Number(p.price).toLocaleString('vi-VN')}₫
-                    </span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                      className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-                    >
-                      <ShoppingCart size={14} />
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <ProductCard key={p.id} product={p} />
             ))}
           </div>
         )}

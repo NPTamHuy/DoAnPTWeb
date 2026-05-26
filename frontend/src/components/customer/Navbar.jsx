@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../../store/authStore';
+import useCartStore from '../../store/cartStore';
 import {
   ShoppingCart,
   User,
@@ -13,7 +14,7 @@ import {
 } from 'lucide-react';
 import api from '../../api/axiosConfig';
 
-export default function Navbar({ onSearch }) {
+export default function Navbar({ onSearch, hideCategory = false }) {
   const [searchVal, setSearchVal] = useState('');
   const [categories, setCategories] = useState([]);
   const [showCatMenu, setShowCatMenu] = useState(false);
@@ -42,13 +43,15 @@ export default function Navbar({ onSearch }) {
     navigate('/login');
   };
 
+  const totalItems = useCartStore((s) => s.getTotalItems());
+
   return (
     <nav className="bg-blue-600 sticky top-0 z-50 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center h-16 gap-4">
           {/* Logo */}
           <div
-            className="flex items-center gap-2 cursor-pointer flex-shrink-0"
+            className="flex items-center gap-2 cursor-pointer shrink-0"
             onClick={() => navigate('/')}
           >
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
@@ -60,7 +63,7 @@ export default function Navbar({ onSearch }) {
           </div>
 
           {/* Danh mục dropdown */}
-          <div ref={catRef} className="relative flex-shrink-0">
+          <div ref={catRef} className="relative shrink-0">
             <button
               onClick={() => setShowCatMenu(!showCatMenu)}
               className="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-sm font-medium transition"
@@ -124,9 +127,16 @@ export default function Navbar({ onSearch }) {
           {/* Cart */}
           <button
             onClick={() => navigate('/cart')}
-            className="flex items-center gap-2 text-white hover:bg-blue-700 px-3 py-2 rounded-xl transition flex-shrink-0"
+            className="flex items-center gap-2 text-white hover:bg-blue-700 px-3 py-2 rounded-xl transition shrink-0 relative"
           >
-            <ShoppingCart size={20} />
+            <div className="relative">
+              <ShoppingCart size={20} />
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                  {totalItems > 9 ? '9+' : totalItems}
+                </span>
+              )}
+            </div>
             <span className="hidden sm:block text-sm font-medium">
               Giỏ hàng
             </span>
@@ -134,7 +144,7 @@ export default function Navbar({ onSearch }) {
 
           {/* User */}
           {token ? (
-            <div ref={userRef} className="relative flex-shrink-0">
+            <div ref={userRef} className="relative shrink-0">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
                 className="flex items-center gap-2 bg-blue-700 hover:bg-blue-800 text-white px-3 py-2 rounded-xl transition"
@@ -199,7 +209,7 @@ export default function Navbar({ onSearch }) {
           ) : (
             <button
               onClick={() => navigate('/login')}
-              className="flex items-center gap-2 bg-white text-blue-600 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-blue-50 transition flex-shrink-0"
+              className="flex items-center gap-2 bg-white text-blue-600 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-blue-50 transition shrink-0"
             >
               <User size={16} />
               Đăng nhập
