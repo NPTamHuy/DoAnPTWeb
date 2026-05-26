@@ -1,10 +1,455 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../../components/customer/Navbar';
+import api from '../../api/axiosConfig';
+import {
+  ShoppingCart,
+  Star,
+  ChevronRight,
+  Zap,
+  Shield,
+  Truck,
+  Headphones,
+  Package,
+} from 'lucide-react';
+
 export default function Home() {
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [p, c] = await Promise.all([
+          api.get('/products'),
+          api.get('/categories'),
+        ]);
+        setProducts(Array.isArray(p.data) ? p.data : []);
+        setCategories(Array.isArray(c.data) ? c.data : []);
+      } catch (err) {
+        setProducts([]);
+        setCategories([]);
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (products.length === 0) return;
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % Math.min(products.length, 5));
+    }, 3500);
+    return () => clearInterval(timer);
+  }, [products]);
+
+  const filtered = products.filter((p) => {
+    const matchCat =
+      activeCategory === 'all' || p.category?.id === parseInt(activeCategory);
+    const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
+    return matchCat && matchSearch;
+  });
+
+  const featuredProducts = products.slice(0, 4);
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold text-center pt-10">Trang chủ</h1>
-      <p className="text-center text-gray-500 mt-2">
-        Sản phẩm điện tử chính hãng
-      </p>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar onSearch={setSearch} />
+
+      {/* Hero Banner */}
+      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur px-3 py-1.5 rounded-full text-sm mb-6">
+                <Zap size={14} />
+                <span>Công nghệ đỉnh cao, giá tốt nhất</span>
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+                Khám phá thế giới
+                <br />
+                <span className="text-blue-200">công nghệ</span> hiện đại
+              </h1>
+              <p className="text-blue-100 text-lg mb-8">
+                Laptop, điện thoại, máy tính bảng chính hãng — bảo hành 12 tháng
+                toàn quốc.
+              </p>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() =>
+                    document
+                      .getElementById('products')
+                      .scrollIntoView({ behavior: 'smooth' })
+                  }
+                  className="bg-white text-blue-600 px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition"
+                >
+                  Mua ngay
+                </button>
+                <button className="border border-white/30 text-white px-6 py-3 rounded-xl font-medium hover:bg-white/10 transition">
+                  Xem danh mục
+                </button>
+              </div>
+            </div>
+
+            {/* Product Slider */}
+            <div className="hidden md:block">
+              {products.length > 0 && (
+                <div className="relative">
+                  {/* Slide */}
+                  <div
+                    className="bg-white/10 backdrop-blur rounded-3xl p-6 cursor-pointer hover:bg-white/20 transition"
+                    onClick={() =>
+                      navigate(`/product/${products[currentSlide]?.id}`)
+                    }
+                  >
+                    <div className="relative h-56 mb-4">
+                      {products[currentSlide]?.imageUrl ? (
+                        <img
+                          key={currentSlide}
+                          src={products[currentSlide].imageUrl}
+                          alt={products[currentSlide].name}
+                          className="w-full h-full object-contain rounded-2xl animate-fade-in"
+                          style={{ animation: 'fadeIn 0.5s ease' }}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-white/10 rounded-2xl flex items-center justify-center">
+                          <Package size={64} className="text-white/30" />
+                        </div>
+                      )}
+                      <span className="absolute top-3 left-3 bg-white/20 backdrop-blur text-white text-xs px-2.5 py-1 rounded-full font-medium">
+                        {products[currentSlide]?.category?.name || 'Sản phẩm'}
+                      </span>
+                    </div>
+                    <h3 className="text-white font-semibold text-lg line-clamp-1 mb-1">
+                      {products[currentSlide]?.name}
+                    </h3>
+                    <p className="text-blue-200 text-xl font-bold">
+                      {Number(products[currentSlide]?.price).toLocaleString(
+                        'vi-VN',
+                      )}
+                      ₫
+                    </p>
+                  </div>
+
+                  {/* Dots */}
+                  <div className="flex items-center justify-center gap-2 mt-4">
+                    {products.slice(0, 5).map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setCurrentSlide(i)}
+                        className={`transition-all rounded-full ${
+                          i === currentSlide
+                            ? 'w-6 h-2 bg-white'
+                            : 'w-2 h-2 bg-white/40 hover:bg-white/60'
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Prev/Next */}
+                  <button
+                    onClick={() =>
+                      setCurrentSlide(
+                        (prev) =>
+                          (prev - 1 + Math.min(products.length, 5)) %
+                          Math.min(products.length, 5),
+                      )
+                    }
+                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-8 h-8 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={() =>
+                      setCurrentSlide(
+                        (prev) => (prev + 1) % Math.min(products.length, 5),
+                      )
+                    }
+                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-8 h-8 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center text-white transition"
+                  >
+                    ›
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="bg-white border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              {
+                icon: Truck,
+                title: 'Miễn phí vận chuyển',
+                desc: 'Đơn hàng trên 500K',
+              },
+              {
+                icon: Shield,
+                title: 'Bảo hành chính hãng',
+                desc: '12 tháng toàn quốc',
+              },
+              { icon: Zap, title: 'Giao hàng nhanh', desc: 'Trong vòng 24h' },
+              {
+                icon: Headphones,
+                title: 'Hỗ trợ 24/7',
+                desc: 'Tư vấn miễn phí',
+              },
+            ].map((f, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <f.icon size={20} className="text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {f.title}
+                  </p>
+                  <p className="text-xs text-gray-500">{f.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-gray-900">Danh mục sản phẩm</h2>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <button
+            onClick={() => setActiveCategory('all')}
+            className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition
+                            ${
+                              activeCategory === 'all'
+                                ? 'border-blue-600 bg-blue-50'
+                                : 'border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50/50'
+                            }`}
+          >
+            <div
+              className={`w-12 h-12 rounded-xl flex items-center justify-center
+                            ${activeCategory === 'all' ? 'bg-blue-600' : 'bg-gray-100'}`}
+            >
+              <Package
+                size={22}
+                className={
+                  activeCategory === 'all' ? 'text-white' : 'text-gray-500'
+                }
+              />
+            </div>
+            <span
+              className={`text-xs font-medium ${activeCategory === 'all' ? 'text-blue-600' : 'text-gray-600'}`}
+            >
+              Tất cả
+            </span>
+          </button>
+          {categories.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => setActiveCategory(String(c.id))}
+              className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition
+                                ${
+                                  activeCategory === String(c.id)
+                                    ? 'border-blue-600 bg-blue-50'
+                                    : 'border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50/50'
+                                }`}
+            >
+              <div
+                className={`w-12 h-12 rounded-xl flex items-center justify-center
+                                ${activeCategory === String(c.id) ? 'bg-blue-600' : 'bg-gray-100'}`}
+              >
+                <Package
+                  size={22}
+                  className={
+                    activeCategory === String(c.id)
+                      ? 'text-white'
+                      : 'text-gray-500'
+                  }
+                />
+              </div>
+              <span
+                className={`text-xs font-medium text-center ${activeCategory === String(c.id) ? 'text-blue-600' : 'text-gray-600'}`}
+              >
+                {c.name}
+              </span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Products */}
+      <section
+        id="products"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16"
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-gray-900">
+            {activeCategory === 'all'
+              ? 'Tất cả sản phẩm'
+              : categories.find((c) => String(c.id) === activeCategory)?.name}
+            <span className="ml-2 text-sm font-normal text-gray-400">
+              ({filtered.length} sản phẩm)
+            </span>
+          </h2>
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-white rounded-2xl border border-gray-100 overflow-hidden animate-pulse"
+              >
+                <div className="h-48 bg-gray-100" />
+                <div className="p-4 space-y-2">
+                  <div className="h-3 bg-gray-100 rounded w-1/3" />
+                  <div className="h-4 bg-gray-100 rounded w-3/4" />
+                  <div className="h-4 bg-gray-100 rounded w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-16 text-gray-400">
+            <Package size={48} className="mx-auto mb-4 opacity-30" />
+            <p>Không tìm thấy sản phẩm nào</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filtered.map((p) => (
+              <div
+                key={p.id}
+                className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer group"
+                onClick={() => navigate(`/product/${p.id}`)}
+              >
+                <div className="relative h-48 bg-gray-50 overflow-hidden">
+                  {p.imageUrl ? (
+                    <img
+                      src={p.imageUrl}
+                      alt={p.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-200">
+                      <Package size={48} />
+                    </div>
+                  )}
+                  {p.stock <= 5 && p.stock > 0 && (
+                    <span className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                      Sắp hết
+                    </span>
+                  )}
+                  {p.stock === 0 && (
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <span className="bg-white text-gray-700 text-xs font-medium px-3 py-1 rounded-full">
+                        Hết hàng
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="p-4">
+                  <p className="text-xs text-blue-600 font-medium mb-1">
+                    {p.category?.name || 'Khác'}
+                  </p>
+                  <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 mb-3 leading-snug">
+                    {p.name}
+                  </h3>
+                  <div className="flex items-center gap-1 mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        size={12}
+                        className="text-yellow-400 fill-yellow-400"
+                      />
+                    ))}
+                    <span className="text-xs text-gray-400 ml-1">(128)</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-blue-600 font-bold">
+                      {Number(p.price).toLocaleString('vi-VN')}₫
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                    >
+                      <ShoppingCart size={14} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <Zap size={18} className="text-white" />
+                </div>
+                <span className="font-bold text-lg">TechShop</span>
+              </div>
+              <p className="text-gray-400 text-sm">
+                Cửa hàng điện tử chính hãng, uy tín hàng đầu Việt Nam.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-3">Sản phẩm</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                {categories.map((c) => (
+                  <li key={c.id}>
+                    <button
+                      onClick={() => {
+                        setActiveCategory(String(c.id));
+                        document
+                          .getElementById('products')
+                          .scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="hover:text-white transition"
+                    >
+                      {c.name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-3">Hỗ trợ</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li>Chính sách bảo hành</li>
+                <li>Chính sách đổi trả</li>
+                <li>Hướng dẫn mua hàng</li>
+                <li>Liên hệ</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-3">Liên hệ</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li>📞 1800 1234</li>
+                <li>📧 support@techshop.vn</li>
+                <li>📍 TP. Hồ Chí Minh</li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-500">
+            © 2026 TechShop. All rights reserved.
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
