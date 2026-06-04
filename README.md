@@ -302,7 +302,7 @@ Dự án được thiết kế theo kiến trúc **Client-Server** với **REST 
 ### 🔧 Quản trị (Admin)
 - Dashboard thống kê tổng quan
 - Quản lý sản phẩm: thêm/sửa/xóa, upload nhiều ảnh, thêm thông số kỹ thuật động
-- Quản lý danh mục
+- Quản lý danh mục: thêm/sửa/xóa danh mục
 - Quản lý đơn hàng: xem thông tin khách hàng, cập nhật trạng thái trực tiếp
 - Quản lý người dùng: xem danh sách, lọc theo role, tìm kiếm
 
