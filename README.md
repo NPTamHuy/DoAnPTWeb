@@ -20,8 +20,6 @@ TechShop là website thương mại điện tử chuyên bán các thiết bị 
 
 ## 🖼️ Giao diện hệ thống
 
-## 🖼️ Giao diện hệ thống
-
 ### 1. Trang chủ
 > Hero banner với slider sản phẩm tự động chuyển mỗi 3.5 giây, khu vực
 > 4 cam kết (miễn phí ship, bảo hành, giao hàng nhanh, hỗ trợ 24/7),
