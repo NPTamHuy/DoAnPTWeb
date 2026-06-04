@@ -312,52 +312,52 @@ Dự án được thiết kế theo kiến trúc **Client-Server** với **REST 
 
 ```
 DoAnPTWeb/
-├── frontend/                          # React + Vite (port 5173)
+├── frontend/                            # React + Vite (port 5173)
 │   └── src/
 │       ├── api/
-│       │   ├── axiosConfig.js         # Interceptor JWT tự động
-│       │   └── productApi.js          # API lấy thống kê rating
+│       │   ├── axiosConfig.js           # Interceptor JWT tự động
+│       │   └── productApi.js            # API lấy thống kê rating
 │       ├── components/
 │       │   ├── customer/
-│       │   │   ├── Navbar.jsx         # Thanh điều hướng + giỏ hàng badge
-│       │   │   ├── Footer.jsx         # Footer dùng chung
-│       │   │   ├── ProductCard.jsx    # Card sản phẩm + rating thật
-│       │   │   └── StarRating.jsx     # Component hiển thị sao
+│       │   │   ├── Navbar.jsx           # Thanh điều hướng + giỏ hàng badge
+│       │   │   ├── Footer.jsx           # Footer dùng chung
+│       │   │   ├── ProductCard.jsx      # Card sản phẩm + rating thật
+│       │   │   └── StarRating.jsx       # Component hiển thị sao
 │       │   └── admin/
-│       │       └── AdminLayout.jsx    # Layout sidebar Admin
+│       │       └── AdminLayout.jsx      # Layout sidebar Admin
 │       ├── pages/
 │       │   ├── customer/
-│       │   │   ├── Home.jsx           # Trang chủ + slider
-│       │   │   ├── ProductList.jsx    # Danh sách + filter sidebar
-│       │   │   ├── ProductDetail.jsx  # Chi tiết + gallery + đánh giá
-│       │   │   ├── Cart.jsx           # Giỏ hàng + đặt hàng
-│       │   │   ├── Orders.jsx         # Lịch sử đơn hàng
-│       │   │   ├── Profile.jsx        # Thông tin cá nhân
-│       │   │   ├── Login.jsx          # Đăng nhập
-│       │   │   └── Register.jsx       # Đăng ký
+│       │   │   ├── Home.jsx             # Trang chủ + slider
+│       │   │   ├── ProductList.jsx      # Danh sách + filter sidebar
+│       │   │   ├── ProductDetail.jsx    # Chi tiết + gallery + đánh giá
+│       │   │   ├── Cart.jsx             # Giỏ hàng + đặt hàng
+│       │   │   ├── Orders.jsx           # Lịch sử đơn hàng
+│       │   │   ├── Profile.jsx          # Thông tin cá nhân
+│       │   │   ├── Login.jsx            # Đăng nhập
+│       │   │   └── Register.jsx         # Đăng ký
 │       │   └── admin/
-│       │       ├── Dashboard.jsx      # Thống kê tổng quan
-│       │       ├── Products.jsx       # Quản lý sản phẩm + danh mục
-│       │       ├── CreateProduct.jsx  # Thêm sản phẩm
-│       │       ├── EditProduct.jsx    # Sửa sản phẩm
-│       │       ├── Orders.jsx         # Quản lý đơn hàng
-│       │       └── Users.jsx          # Quản lý người dùng
+│       │       ├── Dashboard.jsx        # Thống kê tổng quan
+│       │       ├── Products.jsx         # Quản lý sản phẩm + danh mục
+│       │       ├── CreateProduct.jsx    # Thêm sản phẩm
+│       │       ├── EditProduct.jsx      # Sửa sản phẩm
+│       │       ├── Orders.jsx           # Quản lý đơn hàng
+│       │       └── Users.jsx            # Quản lý người dùng
 │       ├── store/
-│       │   ├── authStore.js           # Zustand: thông tin đăng nhập
-│       │   └── cartStore.js           # Zustand: giỏ hàng
+│       │   ├── authStore.js             # Zustand: thông tin đăng nhập
+│       │   └── cartStore.js             # Zustand: giỏ hàng
 │       └── utils/
-│           ├── constants.js           # STATUS_CONFIG, STATUS_OPTIONS
-│           └── formatters.js          # formatPrice, formatDate
+│           ├── constants.js             # STATUS_CONFIG, STATUS_OPTIONS
+│           └── formatters.js            # formatPrice, formatDate
 │
-└── backend/                           # Spring Boot (port 8080)
+└── backend/                             # Spring Boot (port 8080)
     └── src/main/java/
         ├── controller/
-        │   ├── AuthController.java    # Đăng ký, Đăng nhập
-        │   ├── ProductController.java # CRUD sản phẩm + upload ảnh
-        │   ├── CategoryController.java# CRUD danh mục
-        │   ├── OrderController.java   # Đặt hàng, xem, cập nhật
-        │   ├── ReviewController.java  # Đánh giá sản phẩm
-        │   └── UserController.java    # Thông tin người dùng
+        │   ├── AuthController.java      # Đăng ký, Đăng nhập
+        │   ├── ProductController.java   # CRUD sản phẩm + upload ảnh
+        │   ├── CategoryController.java  # CRUD danh mục
+        │   ├── OrderController.java     # Đặt hàng, xem, cập nhật
+        │   ├── ReviewController.java    # Đánh giá sản phẩm
+        │   └── UserController.java      # Thông tin người dùng
         ├── entity/
         │   ├── User.java
         │   ├── Category.java
@@ -367,11 +367,11 @@ DoAnPTWeb/
         │   ├── Order.java
         │   ├── OrderItem.java
         │   └── Review.java
-        ├── repository/                # 8 JPA Repositories
+        ├── repository/                  # 8 JPA Repositories
         ├── config/
-        │   ├── SecurityConfig.java    # Spring Security + CORS
-        │   ├── JwtFilter.java         # Xác thực JWT mỗi request
-        │   └── JwtUtil.java           # Generate & Validate JWT
+        │   ├── SecurityConfig.java      # Spring Security + CORS
+        │   ├── JwtFilter.java           # Xác thực JWT mỗi request
+        │   └── JwtUtil.java             # Generate & Validate JWT
         └── resources/
             └── application.properties
 ```
@@ -385,7 +385,7 @@ DoAnPTWeb/
 - **Java JDK 21** trở lên
 - **Node.js 20.x** trở lên
 - **XAMPP** (MySQL đang chạy)
-- **IntelliJ IDEA** hoặc VS Code
+- **IntelliJ IDEA** hoặc **VS Code**
 - **Postman** (tuỳ chọn — kiểm thử API)
 
 ---
@@ -400,7 +400,14 @@ CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 ```
 
-Cấu hình file `backend/src/main/resources/application.properties`:
+Import file SQL có sẵn trong thư mục dự án:
+
+- Chọn database `doanptweb` vừa tạo
+- Vào tab **Import**
+- Chọn file `doanptweb.sql` trong thư mục gốc của dự án
+- Nhấn **Go** để import
+
+Cấu hình `backend/src/main/resources/application.properties`:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/doanptweb?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
