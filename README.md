@@ -20,77 +20,184 @@ TechShop là website thương mại điện tử chuyên bán các thiết bị 
 
 ## 🖼️ Giao diện hệ thống
 
+## 🖼️ Giao diện hệ thống
+
 ### 1. Trang chủ
-> Hero banner với slider sản phẩm tự động, khu vực danh mục và sản phẩm nổi bật kèm rating thật từ cơ sở dữ liệu.
+> Hero banner với slider sản phẩm tự động chuyển mỗi 3.5 giây, khu vực
+> 4 cam kết (miễn phí ship, bảo hành, giao hàng nhanh, hỗ trợ 24/7),
+> danh mục sản phẩm và sản phẩm nổi bật với rating thật từ cơ sở dữ liệu.
 
 ![Trang chủ](images/home.png)
 
 ---
 
-### 2. Đăng ký & Đăng nhập
-> Giao diện 2 cột, cột trái giới thiệu thương hiệu, cột phải là form xác thực với validation inline và thanh độ mạnh mật khẩu.
+### 2. Đăng nhập
+> Giao diện 2 cột. Cột trái giới thiệu thương hiệu với các cam kết nổi
+> bật. Cột phải là form đăng nhập gồm email, mật khẩu với nút ẩn/hiện
+> mật khẩu. Hiển thị thông báo lỗi inline khi sai thông tin.
 
-| Đăng nhập | Đăng ký |
-|---|---|
-| ![Đăng nhập](images/login.png) | ![Đăng ký](images/register.png) |
+![Đăng nhập](images/login.png)
 
 ---
 
-### 3. Danh sách sản phẩm
-> Sidebar lọc theo danh mục và sắp xếp, grid sản phẩm với card hiển thị hình ảnh, tên, rating thật và giá.
+### 3. Đăng ký
+> Giao diện 2 cột tương tự đăng nhập. Form gồm họ tên, email, mật khẩu
+> và số điện thoại. Có thanh hiển thị độ mạnh mật khẩu realtime (Yếu /
+> Trung bình / Mạnh) và thông báo lỗi inline khi email đã tồn tại.
+
+![Đăng ký](images/register.png)
+
+---
+
+### 4. Danh sách sản phẩm
+> Bố cục 2 phần. Sidebar trái gồm danh mục sản phẩm (kèm số lượng SP
+> từng danh mục) và tùy chọn sắp xếp (mặc định, giá tăng, giá giảm,
+> tên A-Z). Khu vực phải là grid sản phẩm với card hiển thị hình ảnh,
+> tên, rating thật và giá.
 
 ![Danh sách sản phẩm](images/product_list.png)
 
 ---
 
-### 4. Chi tiết sản phẩm
-> Gallery nhiều ảnh, thông số kỹ thuật dạng bảng, nút thêm giỏ hàng, sản phẩm liên quan và khu vực đánh giá thật.
+### 5. Chi tiết sản phẩm
+> Gồm các khu vực: gallery nhiều ảnh với thumbnail bên dưới, thông tin
+> sản phẩm (tên, rating, giá, tồn kho, thông số nổi bật, bộ chọn số
+> lượng, nút thêm giỏ hàng và mua ngay), bảng thông số kỹ thuật đầy đủ,
+> mô tả sản phẩm, sản phẩm liên quan cùng danh mục và khu vực đánh giá.
 
 ![Chi tiết sản phẩm](images/product_detail.png)
 
 ---
 
-### 5. Giỏ hàng & Đặt hàng
-> Quản lý giỏ hàng với tăng giảm số lượng, tóm tắt đơn hàng và form nhập thông tin giao hàng 3 bước.
+### 6. Giỏ hàng
+> Bố cục 2 phần. Danh sách sản phẩm bên trái hiển thị hình ảnh, tên,
+> danh mục, bộ tăng giảm số lượng, nút xóa và thành tiền từng sản phẩm.
+> Tóm tắt đơn hàng bên phải hiển thị tạm tính, phí ship (miễn phí đơn
+> trên 500K) và tổng cộng.
 
-| Giỏ hàng | Đặt hàng |
-|---|---|
-| ![Giỏ hàng](images/cart.png) | ![Đặt hàng](images/checkout.png) |
+![Giỏ hàng](images/cart.png)
 
 ---
 
-### 6. Đơn hàng của tôi
-> Lịch sử đơn hàng với lọc theo trạng thái, hiển thị sản phẩm kèm hình ảnh và nút hủy đơn khi chờ xác nhận.
+### 7. Đặt hàng
+> Form nhập thông tin giao hàng gồm họ tên người nhận, số điện thoại,
+> địa chỉ và ghi chú. Phía dưới là phần chọn phương thức thanh toán
+> (COD). Bên phải là tóm tắt đơn hàng với danh sách sản phẩm thu gọn
+> và tổng tiền. Sau khi xác nhận hiển thị màn hình đặt hàng thành công.
+
+| Nhập thông tin | Thành công |
+|---|---|
+| ![Đặt hàng](images/checkout.png) | ![Thành công](images/checkout_success.png) |
+
+---
+
+### 8. Đơn hàng của tôi
+> Phía trên có các tab lọc theo trạng thái: Tất cả, Chờ xác nhận, Đã
+> xác nhận, Đang giao, Đã giao, Đã hủy (kèm số lượng mỗi tab). Mỗi
+> đơn hàng hiển thị mã đơn, thời gian, trạng thái (badge màu), danh
+> sách sản phẩm kèm ảnh, địa chỉ giao hàng và tổng tiền. Đơn hàng
+> Chờ xác nhận có thêm nút Hủy đơn hàng.
 
 ![Đơn hàng](images/orders.png)
 
 ---
 
-### 7. Thông tin cá nhân
-> 3 tab: Thông tin cá nhân, Đổi mật khẩu và Đơn hàng gần đây.
+### 9. Đánh giá sản phẩm
+> Nằm trong trang chi tiết sản phẩm. Phần trên hiển thị điểm trung bình
+> kèm tổng số đánh giá. Form đánh giá gồm bộ chọn sao 1-5 (hover hiện
+> nhãn: Rất tệ / Tệ / Bình thường / Tốt / Xuất sắc) và ô nhập nhận xét.
+> Danh sách đánh giá hiển thị avatar, tên, ngày và số sao của từng người.
+> Mỗi người chỉ đánh giá một sản phẩm một lần.
 
-![Profile](images/profile.png)
+![Đánh giá](images/review.png)
 
 ---
 
-### 8. Admin Dashboard
-> Thống kê tổng quan với 4 thẻ số liệu và sidebar điều hướng.
+### 10. Thông tin cá nhân
+> Header hiển thị avatar chữ cái, họ tên và email. Sidebar trái có 3
+> tab điều hướng. Tab Thông tin: cập nhật họ tên, số điện thoại, địa
+> chỉ (email chỉ đọc). Tab Đổi mật khẩu: nhập mật khẩu hiện tại, mật
+> khẩu mới và xác nhận (có nút ẩn/hiện). Tab Đơn hàng: hiển thị 5 đơn
+> hàng gần nhất kèm nút Xem tất cả.
+
+Thông tin:
+![Thông tin](images/profile_info.png)
+
+Đổi mật khẩu:
+![Đổi MK](images/profile_password.png)
+
+Đơn hàng gần đây:
+![Đơn hàng](images/profile_orders.png)
+
+---
+
+### 11. Admin Dashboard
+> Sidebar trái gồm logo, các mục Tổng quan, Sản phẩm, Đơn hàng, Người
+> dùng và thông tin tài khoản Admin. Khu vực chính hiển thị 4 thẻ thống
+> kê: tổng số sản phẩm, danh mục, đơn hàng và người dùng.
 
 ![Dashboard](images/dashboard.png)
 
 ---
 
-### 9. Quản lý sản phẩm
-> Grid sản phẩm với tìm kiếm, lọc danh mục, thêm/sửa/xóa và upload nhiều ảnh kèm thông số kỹ thuật động.
+### 12. Quản lý sản phẩm
+> Grid sản phẩm với thanh tìm kiếm và nút lọc theo danh mục phía trên.
+> Mỗi thẻ sản phẩm hiển thị ảnh, tên, danh mục, giá, tồn kho và 2 nút
+> Sửa / Xóa. Góc trên phải có nút Thêm sản phẩm. Tab Danh mục ở phía
+> trên để chuyển sang quản lý danh mục.
 
 ![Quản lý sản phẩm](images/admin_products.png)
 
 ---
 
-### 10. Quản lý đơn hàng
-> Bảng đơn hàng với 5 thẻ thống kê trạng thái, cập nhật trạng thái trực tiếp qua dropdown.
+### 13. Thêm sản phẩm
+> Form gồm: tên sản phẩm, chọn danh mục, giá bán, số lượng tồn kho,
+> mô tả. Khu vực upload ảnh hỗ trợ nhiều ảnh, kéo thả hoặc nhấn chọn.
+> Phần thông số kỹ thuật cho phép thêm nhiều cặp tên-giá trị động (có
+> nút thêm dòng và xóa từng dòng).
+
+![Thêm sản phẩm](images/admin_create_product.png)
+
+---
+
+### 14. Sửa sản phẩm
+> Giao diện tương tự Thêm sản phẩm nhưng các trường được điền sẵn
+> thông tin hiện tại. Hiển thị ảnh đã upload với nút xóa từng ảnh và
+> có thể upload thêm ảnh mới. Thông số kỹ thuật hiển thị sẵn và có thể
+> chỉnh sửa hoặc thêm mới.
+
+![Sửa sản phẩm](images/admin_edit_product.png)
+
+---
+
+### 15. Quản lý danh mục
+> Bảng danh sách danh mục với tên và mô tả. Form thêm danh mục nhanh
+> ngay trên trang gồm ô nhập tên và mô tả. Mỗi danh mục có 2 nút
+> Sửa (mở form chỉnh sửa inline) và Xóa (có xác nhận trước khi xóa).
+
+![Quản lý danh mục](images/admin_categories.png)
+
+---
+
+### 16. Quản lý đơn hàng
+> Phía trên có 5 thẻ thống kê số lượng theo trạng thái (nhấn để lọc).
+> Thanh tab và ô tìm kiếm theo mã đơn hoặc địa chỉ. Bảng gồm các cột:
+> mã đơn + ngày đặt, sản phẩm kèm ảnh, thông tin khách hàng (tên +
+> email), địa chỉ giao hàng, tổng tiền, badge trạng thái và dropdown
+> cập nhật trạng thái. Đơn đã giao/đã hủy thì dropdown bị vô hiệu hóa.
 
 ![Quản lý đơn hàng](images/admin_orders.png)
+
+---
+
+### 17. Quản lý người dùng
+> Phía trên có 3 thẻ thống kê: tổng người dùng, khách hàng và Admin.
+> Tabs lọc theo vai trò (Tất cả / Khách hàng / Admin) và ô tìm kiếm
+> theo tên hoặc email. Bảng gồm avatar chữ cái + họ tên + ID, email,
+> số điện thoại, badge vai trò (Admin màu tím / Khách hàng màu xanh)
+> và badge trạng thái (Hoạt động màu xanh lá / Bị khóa màu đỏ).
+
+![Quản lý người dùng](images/admin_users.png)
 
 ---
 
