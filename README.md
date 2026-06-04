@@ -209,7 +209,7 @@ Dự án được thiết kế theo kiến trúc **Client-Server** với **REST 
 +---------------------------+---------------------------+
                             |
               HTTP Request  |  HTTP Response
-              (JSON, FormData)  |  (JSON)
+          (JSON, FormData)  |  (JSON)
                             v
 +-------------------------------------------------------+
 |          FRONTEND (REACT + VITE — PORT 5173)          |
