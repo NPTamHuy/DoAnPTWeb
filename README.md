@@ -111,17 +111,17 @@ Dự án được thiết kế theo kiến trúc **Client-Server** với **REST 
 |  - ReactJS + React Router (Điều hướng SPA)            |
 |  - Tailwind CSS (Giao diện)                           |
 |  - Zustand (Quản lý state: Auth, Cart)                |
-|  - Axios + Interceptor (Gọi API + gắn JWT tự động)   |
+|  - Axios + Interceptor (Gọi API + gắn JWT tự động)    |
 +---------------------------+---------------------------+
                             |
               REST API Call | JSON Response
               Bearer Token  |
                             v
 +-------------------------------------------------------+
-|          BỘ LỌC BẢO MẬT (SPRING SECURITY)            |
-|  - JWT Authentication                                  |
-|  - JwtFilter — Xác thực mỗi request                  |
-|  - CORS Configuration                                  |
+|          BỘ LỌC BẢO MẬT (SPRING SECURITY)             |
+|  - JWT Authentication                                 |
+|  - JwtFilter — Xác thực mỗi request                   |
+|  - CORS Configuration                                 |
 +---------------------------+---------------------------+
                             |
                             v
@@ -134,7 +134,7 @@ Dự án được thiết kế theo kiến trúc **Client-Server** với **REST 
                             |
                             v
 +-------------------------------------------------------+
-|           TẦNG NGHIỆP VỤ (SERVICE / REPOSITORY)      |
+|           TẦNG NGHIỆP VỤ (SERVICE / REPOSITORY)       |
 |  - Spring Data JPA + Hibernate                        |
 |  - BCrypt Password Encoding                           |
 |  - JWT Token Generation & Validation                  |
@@ -142,7 +142,7 @@ Dự án được thiết kế theo kiến trúc **Client-Server** với **REST 
                             |
                             v
 +-------------------------------------------------------+
-|              CƠ SỞ DỮ LIỆU (MYSQL)                   |
+|              CƠ SỞ DỮ LIỆU (MYSQL)                    |
 |  - users, categories, products, product_images        |
 |  - product_specs, orders, order_items, reviews        |
 +-------------------------------------------------------+
