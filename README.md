@@ -14,7 +14,7 @@ TechShop là website thương mại điện tử chuyên bán các thiết bị 
 
 > Xem video demo đầy đủ các tính năng của TechShop tại link bên dưới:
 
-[![Watch Demo](https://img.shields.io/badge/▶%20Xem%20Video%20Demo-FF0000?style=for-the-badge&logo=googledrive&logoColor=white)](https://drive.google.com)
+[![Watch Demo](https://img.shields.io/badge/▶%20Xem%20Video%20Demo-FF0000?style=for-the-badge&logo=googledrive&logoColor=white)](https://drive.google.com/file/d/12XUdaO9y9dIJ8Sg8SH7Q7UuD8zgEt7xb/view?usp=sharing)
 
 ---
 
