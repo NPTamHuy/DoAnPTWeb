@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.*;
 
+
 @Service
 public class ChatService {
 
@@ -22,7 +23,7 @@ public class ChatService {
 
     private final String GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
     private final String MODEL = "llama-3.3-70b-versatile";
-    
+
     public Map<String, Object> chat(String userMessage, String email) {
         User user = userRepository.findByEmail(email).orElseThrow();
 
