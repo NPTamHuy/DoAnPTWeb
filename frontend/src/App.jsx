@@ -1,5 +1,15 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+
 import useAuthStore from './store/authStore';
+
+import ChatBot from './components/customer/ChatBot';
 
 import Home from './pages/customer/Home';
 import Login from './pages/customer/Login';
@@ -23,10 +33,13 @@ const AdminRoute = ({ children }) => {
   return children;
 };
 
-function App() {
+// Tách ra component riêng vì useLocation phải dùng trong BrowserRouter
+function AnimatedRoutes() {
+  const location = useLocation();
+
   return (
-    <BrowserRouter>
-      <Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -85,6 +98,15 @@ function App() {
           }
         />
       </Routes>
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AnimatedRoutes />
+      <ChatBot />
     </BrowserRouter>
   );
 }

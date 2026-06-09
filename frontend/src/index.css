@@ -1,1 +1,42 @@
 @import 'tailwindcss';
+/* Smooth scroll toàn app */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Transition mượt cho tất cả elements */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Button hover effect */
+button {
+  transition: all 0.2s ease;
+}
+
+/* Link transition */
+a {
+  transition: all 0.2s ease;
+}
+
+/* Image zoom effect */
+img {
+  transition: transform 0.4s ease;
+}
+
+/* Loading skeleton animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}

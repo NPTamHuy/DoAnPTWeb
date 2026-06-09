@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { ShoppingCart, Package } from 'lucide-react';
 import StarRating from './StarRating';
 import { getProductStats } from '../../api/productApi';
@@ -13,8 +14,11 @@ export default function ProductCard({ product }) {
   }, [product.id]);
 
   return (
-    <div
-      className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer group"
+    <motion.div
+      whileHover={{ y: -6, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer group"
       onClick={() => navigate(`/product/${product.id}`)}
     >
       <div className="relative h-52 bg-gray-50 overflow-hidden">
@@ -65,6 +69,6 @@ export default function ProductCard({ product }) {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
